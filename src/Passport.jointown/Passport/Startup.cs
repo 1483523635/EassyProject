@@ -54,27 +54,33 @@ namespace Passport
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //if (env.IsDevelopment())
-            //{
-               
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //}
+
             app.UseBrowserLink();
             app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
+            SeedRoles(app).ConfigureAwait(false).GetAwaiter().GetResult();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+        private async Task SeedRoles(IApplicationBuilder app)
+        {
+
+            var db_context = app.ApplicationServices.GetService<RoleManager<IdentityRole>>();
+            if (!await db_context.RoleExistsAsync("admin"))
+            {
+                await db_context.CreateAsync(new IdentityRole("admin"));
+            }
+            if (!await db_context.RoleExistsAsync("enterpriseUser"))
+            {
+                await db_context.CreateAsync(new IdentityRole("enterpriseUser"));
+            }
         }
     }
 }

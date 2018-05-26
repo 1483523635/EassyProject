@@ -229,7 +229,10 @@ namespace Passport.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
                     await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
+                    if (user.Email == "1483523635@qq.com")
+                        await _userManager.AddToRoleAsync(user, "admin");
+                    if (user.Email == "123@qq.com")
+                        await _userManager.AddToRoleAsync(user, "enterpriseUser");
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User created a new account with password.");
                     return RedirectToLocal(returnUrl);
