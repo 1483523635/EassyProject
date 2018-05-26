@@ -16,7 +16,7 @@ namespace Web.Controllers
             //return View();
             return Content(User.Identity.Name);
         }
-        [Authorize]
+        [Authorize(Roles = "enterpriseUser")]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
